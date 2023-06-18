@@ -1,15 +1,58 @@
 version: '3.1'
 services:
   stats-server:
+    container_name: stats-server
+    build: ./stats-service
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - DB_NAME=explore-stats
+      - DB_PORT=5433
+      - DB_HOST=stats-db
+      - USERNAME=postgres
+      - PASSWORD=test
 
   stats-db:
+    container_name: stats-db
     image: postgres:14-alpine
+    ports:
+      - "6541:5433"
+    environment:
+      - POSTGRES_DB=explore-stats
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+    volumes:
+      - ./init/stats:/docker-entrypoint-initdb.d
+    command: -p 5433
 
   ewm-service:
     ports:
       - "8080:8080"
+    container_name: main-server
+    build: ./main-service
+    depends_on:
+      - ewm-db
+    environment:
+      - DB_NAME=explore-main
+      - DB_PORT=5434
+      - DB_HOST=ewm-db
+      - USERNAME=postgres
+      - PASSWORD=test
+      - S_HOST=stats-server
+      - S_PORT=9090
+
 
   ewm-db:
     image: postgres:14-alpine
+    container_name: main-db
+    ports:
+      - "6542:5434"
+    environment:
+      - POSTGRES_DB=explore-main
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+    volumes:
+      - ./init/main:/docker-entrypoint-initdb.d
+    command: -p 5434
