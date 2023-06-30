@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor
 public class ViewStats {
     private String app;
     private String uri;

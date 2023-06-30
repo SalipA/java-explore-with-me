@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -44,9 +46,9 @@ public class StatsClient {
         return statsServiceResponse;
     }
 
-    public ResponseEntity<Object> getStats(@NotNull (message = "не должно быть null") LocalDateTime startDate,
-        @NotNull (message = "не должно быть null") LocalDateTime endDate, @Nullable String[] uri,
-                                           @Nullable Boolean unique) {
+    public List<ViewStats> getStats(@NotNull(message = "не должно быть null") LocalDateTime startDate,
+                                    @NotNull(message = "не должно быть null") LocalDateTime endDate, @Nullable String[] uri,
+                                    @Nullable Boolean unique) {
         validateStartEndTime(startDate, endDate);
 
         String start = DateTimeParser.parseToString(startDate);
@@ -66,17 +68,18 @@ public class StatsClient {
         } else {
             if (unique == null) {
                 parameters = Map.of("start", start, "end", end, "uri", uri);
-                path = "?start={start}&end={end}&uri={uri}";
+                path = "?start={start}&end={end}&uris={uri}";
             } else {
                 parameters = Map.of("start", start, "end", end, "uri", uri, "unique", unique);
-                path = "?start={start}&end={end}&uri={uri}&unique={unique}";
+                path = "?start={start}&end={end}&uris={uri}&unique={unique}";
             }
         }
         HttpEntity<Object> requestEntity = new HttpEntity<>(null, null);
-        ResponseEntity<Object> statsServiceResponse;
-        statsServiceResponse = rest.exchange(API_PREFIX_STATS + path, HttpMethod.GET, requestEntity, Object.class,
-            parameters);
-        return statsServiceResponse;
+        ResponseEntity<List<ViewStats>> statsServiceResponse;
+        statsServiceResponse = rest.exchange(API_PREFIX_STATS + path, HttpMethod.GET, requestEntity,
+            new ParameterizedTypeReference<>() {
+            }, parameters);
+        return statsServiceResponse.getBody();
     }
 
     private void validateStartEndTime(LocalDateTime start, LocalDateTime end) {
