@@ -27,6 +27,8 @@ public class StatsService {
         LocalDateTime startDate = DateTimeParser.parseToDate(start);
         LocalDateTime endDate = DateTimeParser.parseToDate(end);
 
+        validateStartEndTime(startDate, endDate);
+
         List<ViewStats> stats;
         if (uri == null) {
             if (unique) {
@@ -42,5 +44,12 @@ public class StatsService {
             }
         }
         return stats;
+    }
+
+    private void validateStartEndTime(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end)) {
+            log.error("Start date must be before End date");
+            throw new InvalidStartEndTimeExceptionStats("Start date must be before End date");
+        }
     }
 }

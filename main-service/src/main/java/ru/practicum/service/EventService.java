@@ -137,6 +137,7 @@ public class EventService {
         addViews(eventsDtoUnsorted);
         List<EventShortDto> eventsDtoSorted;
         if (sort == null) {
+            saveStats(request);
             return eventsDtoUnsorted;
         } else {
             switch (sort) {
