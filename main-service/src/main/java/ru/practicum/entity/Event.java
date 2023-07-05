@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "events")
 public class Event {
