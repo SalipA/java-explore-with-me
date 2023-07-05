@@ -24,6 +24,7 @@ import ru.practicum.service.UserService;
 import ru.practicum.state.EventState;
 import ru.practicum.state.StateActionAdmin;
 import ru.practicum.state.StateActionPrivate;
+import ru.practicum.state.UserProfileState;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Clock;
@@ -59,7 +60,7 @@ public class EventServiceTest {
 
     @BeforeEach
     public void createEntitiesAndEnvironment() {
-        this.user1 = new User(1L, "testUser1", "testUser1@mail.ru");
+        this.user1 = new User(1L, "testUser1", "testUser1@mail.ru", UserProfileState.PUBLIC);
         this.event1 = new Event(1L, "annotation1ForTestLengthMoreThan20",
             new Category(1L, "testCategory1"), LocalDateTime.now(), "description1ForTestLengthMore" +
             "Than20", LocalDateTime.of(2024, 1, 1, 1, 1, 1), user1,

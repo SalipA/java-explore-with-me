@@ -7,15 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.input.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.input.NewEventDto;
 import ru.practicum.dto.input.UpdateEventUserRequest;
-import ru.practicum.dto.output.EventFullDto;
-import ru.practicum.dto.output.EventRequestStatusUpdateResult;
-import ru.practicum.dto.output.EventShortDto;
-import ru.practicum.dto.output.ParticipationRequestDto;
+import ru.practicum.dto.output.*;
+import ru.practicum.dto.reversible.UserDto;
 import ru.practicum.service.EventService;
 import ru.practicum.service.RequestService;
+import ru.practicum.service.UserService;
+import ru.practicum.state.SubscriptionState;
+import ru.practicum.state.UserProfileState;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -26,10 +28,12 @@ import java.util.List;
 public class PrivateController {
     private final EventService eventService;
     private final RequestService requestService;
+    private final UserService userService;
 
-    public PrivateController(EventService eventService, RequestService requestService) {
+    public PrivateController(EventService eventService, RequestService requestService, UserService userService) {
         this.eventService = eventService;
         this.requestService = requestService;
+        this.userService = userService;
     }
 
     @PostMapping("/{userId}/events")
@@ -103,5 +107,61 @@ public class PrivateController {
     public List<ParticipationRequestDto> getUserRequests(@PathVariable @Positive Long userId) {
         log.info("GET: /users/{}/requests", userId);
         return requestService.getUserRequests(userId);
+    }
+
+    @PatchMapping("/{userId}/profile") //изменить профиль с публичного (по умолчанию) на приватный и наоборот
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto changeUserProfile(@PathVariable @Positive Long userId, @RequestParam UserProfileState profile) {
+        log.info("PATCH: /users/{}/profile, value = {}", userId, profile);
+        return userService.changeUserProfile(userId, profile);
+    }
+
+    @PostMapping("/{subscriberId}/subscribe/{subscribesToId}") // подписаться на пользователя
+    @ResponseStatus(HttpStatus.CREATED)
+    public SubscriptionDto addSubscription(@PathVariable @Positive Long subscriberId,
+                                           @PathVariable @Positive Long subscribesToId) {
+        log.info("POST: /users/{}/subscribe/{}", subscriberId, subscribesToId);
+        return userService.addSubscription(subscriberId, subscribesToId);
+    }
+
+    @DeleteMapping("/{subscriberId}/subscribe/{subscribedToId}") // удалить свою подписку
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSubscription(@PathVariable @Positive Long subscriberId,
+                                   @PathVariable @Positive Long subscribedToId) {
+        log.info("DELETE: /users/{}/subscribe/{}", subscriberId, subscribedToId);
+        userService.deleteSubscription(subscriberId, subscribedToId);
+    }
+
+    @GetMapping("{userId}/subscriptions") // получить свои подписки на других пользователей или подписки на себя
+    @ResponseStatus(HttpStatus.OK)
+    public List<SubscriptionDto> getUsersSubscriptions(@PathVariable @Positive Long userId,
+                                                       @RequestParam @NotBlank(message = "must be only 'TO_ME' or " +
+                                                           "'FROM_ME'") String direction,
+                                                       @RequestParam(required = false) SubscriptionState state,
+                                                       @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                       @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+        log.info("GET: /users/{}/subscriptions, direction = {}, state = {}, from = {}, size = {}", userId,
+            direction, state, from, size);
+        return userService.getUsersSubscriptions(userId, direction, state, from, size);
+    }
+
+    @PatchMapping("/{subscribedToId}/subscribe/{subscriberId}") // изменить статут подписки на себя
+    @ResponseStatus(HttpStatus.OK)
+    public SubscriptionDto changeSubscriptionStatus(@PathVariable @Positive Long subscribedToId,
+                                                    @PathVariable @Positive Long subscriberId,
+                                                    @RequestParam SubscriptionState newState) {
+        log.info("PATCH: /users/{}/subscribe/{}, state = {}", subscribedToId, subscriberId, newState);
+        return userService.changeSubscriptionStatus(subscribedToId, subscriberId, newState);
+    }
+
+    @GetMapping("/{subscriberId}/follow/{subscribedToId}/events") // получить список событий пользователя, на которого
+    // подписан
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> getEventsBySubscription(@PathVariable @Positive Long subscriberId,
+                                                       @PathVariable @Positive Long subscribedToId,
+                                                       @RequestParam (required = false, defaultValue = "0") @Min(0) Integer from,
+                                                       @RequestParam (required = false, defaultValue = "10") @Min(1) Integer size) {
+        log.info("GET: /users/{}/follow/{}/events, from = {}, size = {}", subscriberId, subscribedToId, from, size);
+        return eventService.getEventsBySubscription(subscriberId, subscribedToId, from, size);
     }
 }

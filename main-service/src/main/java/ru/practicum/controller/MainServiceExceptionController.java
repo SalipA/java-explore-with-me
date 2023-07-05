@@ -92,6 +92,12 @@ public class MainServiceExceptionController {
         return createApiError(ApiErrorStatuses.BAD_REQUEST, BAD_REQUEST_REASON, exp.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleIllegalArgExp(final  IllegalArgumentException exp) {
+        return createApiError(ApiErrorStatuses.BAD_REQUEST, BAD_REQUEST_REASON, exp.getMessage());
+    }
+
     private ApiError createApiError(ApiErrorStatuses status, String reason, String message) {
         ApiError response = new ApiError();
         response.setStatus(status.name());
