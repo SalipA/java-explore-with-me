@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class StatsController {
     public List<ViewStats> getStats(@RequestParam @NotBlank String start, @RequestParam @NotBlank String end,
                                     @RequestParam(required = false) String[] uris,
                                     @RequestParam(required = false, defaultValue = "false") Boolean unique) {
-        log.info("GET: /stats, start = {}, end = {}, uri = {}, unique = {}", start, end, uris, unique);
+        log.info("GET: /stats, start = {}, end = {}, uris = {}, unique = {}", start, end, Arrays.toString(uris), unique);
         return statsService.getStats(start, end, uris, unique);
     }
 }

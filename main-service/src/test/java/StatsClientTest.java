@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import ru.practicum.*;
 
 import javax.validation.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -112,17 +114,17 @@ public class StatsClientTest {
 
     @Test
     public void shouldGetStatsStandardCase() {
-        ResponseEntity<Object> response = new ResponseEntity<>(new ViewStats("test", "/event", 2L),
+        ResponseEntity<List<ViewStats>> response = new ResponseEntity<>(List.of(new ViewStats("test", "/event", 2L)),
             HttpStatus.OK);
         when(restTemplateMock.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
-            ArgumentMatchers.<Class<Object>>any(), anyMap())).thenReturn(response);
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), anyMap())).thenReturn(response);
 
-        ResponseEntity<Object> actual = statsClient.getStats(start, end, uri, unique);
+        List<ViewStats> actual = statsClient.getStats(start, end, uri, unique);
 
         verify(restTemplateMock).exchange(urlCaptor.capture(), any(), any(),
-            ArgumentMatchers.<Class<Object>>any(), mapCaptor.capture());
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), mapCaptor.capture());
 
-        String urlExpected = "/stats?start={start}&end={end}&uri={uri}&unique={unique}";
+        String urlExpected = "/stats?start={start}&end={end}&uris={uri}&unique={unique}";
 
         Assertions.assertEquals(urlCaptor.getValue(), urlExpected);
         Assertions.assertEquals(mapCaptor.getValue().get("start"), DateTimeParser.parseToString(start));
@@ -130,8 +132,7 @@ public class StatsClientTest {
         Assertions.assertEquals(mapCaptor.getValue().get("uri"), uri);
         Assertions.assertEquals(mapCaptor.getValue().get("unique"), unique);
 
-        Assertions.assertEquals(actual.getStatusCodeValue(), 200);
-        Assertions.assertEquals(response.getBody(), new ViewStats("test", "/event", 2L));
+        Assertions.assertEquals(response.getBody(), actual);
     }
 
     @Test
@@ -154,15 +155,15 @@ public class StatsClientTest {
 
     @Test
     public void shouldGetStatsUriNullCase() {
-        ResponseEntity<Object> response = new ResponseEntity<>(new ViewStats("test", "/event", 2L),
+        ResponseEntity<List<ViewStats>> response = new ResponseEntity<>(List.of(new ViewStats("test", "/event", 2L)),
             HttpStatus.OK);
         when(restTemplateMock.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
-            ArgumentMatchers.<Class<Object>>any(), anyMap())).thenReturn(response);
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), anyMap())).thenReturn(response);
 
-        ResponseEntity<Object> actual = statsClient.getStats(start, end, null, unique);
+        List<ViewStats> actual = statsClient.getStats(start, end, null, unique);
 
         verify(restTemplateMock).exchange(urlCaptor.capture(), any(), any(),
-            ArgumentMatchers.<Class<Object>>any(), mapCaptor.capture());
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), mapCaptor.capture());
 
         String urlExpected = "/stats?start={start}&end={end}&unique={unique}";
 
@@ -172,23 +173,22 @@ public class StatsClientTest {
         Assertions.assertEquals(mapCaptor.getValue().get("end"), DateTimeParser.parseToString(end));
         Assertions.assertEquals(mapCaptor.getValue().get("unique"), unique);
 
-        Assertions.assertEquals(actual.getStatusCodeValue(), 200);
-        Assertions.assertEquals(response.getBody(), new ViewStats("test", "/event", 2L));
+        Assertions.assertEquals(response.getBody(), actual);
     }
 
     @Test
     public void shouldGetStatsUniqueNullCase() {
-        ResponseEntity<Object> response = new ResponseEntity<>(new ViewStats("test", "/event", 2L),
+        ResponseEntity<List<ViewStats>> response = new ResponseEntity<>(List.of(new ViewStats("test", "/event", 2L)),
             HttpStatus.OK);
         when(restTemplateMock.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
-            ArgumentMatchers.<Class<Object>>any(), anyMap())).thenReturn(response);
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), anyMap())).thenReturn(response);
 
-        ResponseEntity<Object> actual = statsClient.getStats(start, end, uri, null);
+        List<ViewStats> actual = statsClient.getStats(start, end, uri, null);
 
         verify(restTemplateMock).exchange(urlCaptor.capture(), any(), any(),
-            ArgumentMatchers.<Class<Object>>any(), mapCaptor.capture());
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), mapCaptor.capture());
 
-        String urlExpected = "/stats?start={start}&end={end}&uri={uri}";
+        String urlExpected = "/stats?start={start}&end={end}&uris={uri}";
 
         Assertions.assertEquals(urlCaptor.getValue(), urlExpected);
         Assertions.assertFalse(mapCaptor.getValue().containsKey("unique"));
@@ -196,21 +196,20 @@ public class StatsClientTest {
         Assertions.assertEquals(mapCaptor.getValue().get("end"), DateTimeParser.parseToString(end));
         Assertions.assertEquals(mapCaptor.getValue().get("uri"), uri);
 
-        Assertions.assertEquals(actual.getStatusCodeValue(), 200);
-        Assertions.assertEquals(response.getBody(), new ViewStats("test", "/event", 2L));
+        Assertions.assertEquals(response.getBody(), actual);
     }
 
     @Test
     public void shouldGetStatsUniqueAndUriNullCase() {
-        ResponseEntity<Object> response = new ResponseEntity<>(new ViewStats("test", "/event", 2L),
+        ResponseEntity<List<ViewStats>> response = new ResponseEntity<>(List.of(new ViewStats("test", "/event", 2L)),
             HttpStatus.OK);
         when(restTemplateMock.exchange(anyString(), any(HttpMethod.class), any(HttpEntity.class),
-            ArgumentMatchers.<Class<Object>>any(), anyMap())).thenReturn(response);
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), anyMap())).thenReturn(response);
 
-        ResponseEntity<Object> actual = statsClient.getStats(start, end, null, null);
+        List<ViewStats> actual = statsClient.getStats(start, end, null, null);
 
         verify(restTemplateMock).exchange(urlCaptor.capture(), any(), any(),
-            ArgumentMatchers.<Class<Object>>any(), mapCaptor.capture());
+            ArgumentMatchers.<ParameterizedTypeReference<List<ViewStats>>>any(), mapCaptor.capture());
 
         String urlExpected = "/stats?start={start}&end={end}";
 
@@ -220,8 +219,7 @@ public class StatsClientTest {
         Assertions.assertEquals(mapCaptor.getValue().get("start"), DateTimeParser.parseToString(start));
         Assertions.assertEquals(mapCaptor.getValue().get("end"), DateTimeParser.parseToString(end));
 
-        Assertions.assertEquals(actual.getStatusCodeValue(), 200);
-        Assertions.assertEquals(response.getBody(), new ViewStats("test", "/event", 2L));
+        Assertions.assertEquals(response.getBody(), actual);
     }
 
     @Test
