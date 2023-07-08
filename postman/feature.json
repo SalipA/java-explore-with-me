@@ -1,0 +1,1743 @@
+{
+	"info": {
+		"_postman_id": "970cc833-5728-4798-9bb6-6eaca4845816",
+		"name": "\"Explore with me\" API подписки на пользователей",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25493855"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Изменение профиля user id = 3, с public на private",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const target = pm.response.json();",
+									"",
+									"pm.test(\"Пользователь должен содержать поля: id, name, email, profile\", function () {",
+									"pm.expect(target).to.have.property('id');",
+									"pm.expect(target).to.have.property('name');",
+									"pm.expect(target).to.have.property('email');",
+									"pm.expect(target).to.have.property('profile');",
+									"});",
+									"",
+									"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+									"    pm.expect('PRIVATE').equal(target.profile, 'profile должен быть PRIVATE');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/profile?profile=PRIVATE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"profile"
+							],
+							"query": [
+								{
+									"key": "profile",
+									"value": "PRIVATE",
+									"description": "профиль предполагает модерацию подписок пользователем\n"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение профиля user id = 4, с public на private",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"const target = pm.response.json();",
+									"",
+									"pm.test(\"Пользователь должен содержать поля: id, name, email, profile\", function () {",
+									"pm.expect(target).to.have.property('id');",
+									"pm.expect(target).to.have.property('name');",
+									"pm.expect(target).to.have.property('email');",
+									"pm.expect(target).to.have.property('profile');",
+									"});",
+									"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+									"    pm.expect('PRIVATE').equal(target.profile, 'profile должен быть PRIVATE');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId/profile?profile=PRIVATE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"profile"
+							],
+							"query": [
+								{
+									"key": "profile",
+									"value": "PRIVATE",
+									"description": "профиль предполагает модерацию подписок пользователем\n"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "Базовый функционал",
+					"item": [
+						{
+							"name": "Подписка from user id = 1 to user id = 3 (private)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 2 to user id = 1 (public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "2"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 2 to user id = 3 (private)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "2"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 3 to user id = 1 (public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "3"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 3 to user id = 2 (public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "3"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 3 to user id = 4 (private)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "3"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 4 to user id = 3 (private)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "4"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка from user id = 4 to user id = 1 (public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(201);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Подписка должна содержать поля: from, to,state\", function () {",
+											"pm.expect(target).to.have.property('from');",
+											"pm.expect(target).to.have.property('to');",
+											"pm.expect(target).to.have.property('state');",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "4"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписки user id = 1  на других пользователей, pag = ignore, state = ignore",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Количество подписок должно быть равно 1\", function () {",
+											"pm.expect(target.length).to.equal(1);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:userId/subscriptions?direction=FROM_ME",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":userId",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "direction",
+											"value": "FROM_ME"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписки  других пользователей на user id = 1, pag = ignore, state = ignore Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Количество подписок должно быть равно 3\", function () {",
+											"pm.expect(target.length).to.equal(3);",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:userId/subscriptions?direction=TO_ME",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":userId",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "direction",
+											"value": "TO_ME"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Изменение статуса подписки владельцем user id = 3 private profile, state = confirmed",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+											"    pm.expect('CONFIRMED').equal(target.state, 'state должен быть CONFIRMED');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscribedToId/subscribe/:subscriberId?newState=CONFIRMED",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscribedToId",
+										"subscribe",
+										":subscriberId"
+									],
+									"query": [
+										{
+											"key": "newState",
+											"value": "CONFIRMED"
+										}
+									],
+									"variable": [
+										{
+											"key": "subscribedToId",
+											"value": "3"
+										},
+										{
+											"key": "subscriberId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Изменение статуса подписки владельцем user id =3 private profile, state = rejected",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"const target = pm.response.json();",
+											"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+											"    pm.expect('REJECTED').equal(target.state, 'state должен быть REJECTED');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscribedToId/subscribe/:subscriberId?newState=REJECTED",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscribedToId",
+										"subscribe",
+										":subscriberId"
+									],
+									"query": [
+										{
+											"key": "newState",
+											"value": "REJECTED"
+										}
+									],
+									"variable": [
+										{
+											"key": "subscribedToId",
+											"value": "3"
+										},
+										{
+											"key": "subscriberId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Изменение профиля user id = 3, с private на public",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Пользователь должен содержать поля: id, name, email, profile\", function () {",
+											"pm.expect(target).to.have.property('id');",
+											"pm.expect(target).to.have.property('name');",
+											"pm.expect(target).to.have.property('email');",
+											"pm.expect(target).to.have.property('profile');",
+											"});",
+											"",
+											"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+											"    pm.expect('PUBLIC').equal(target.profile, 'profile должен быть PUBLIC');",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:userId/profile?profile=PUBLIC",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":userId",
+										"profile"
+									],
+									"query": [
+										{
+											"key": "profile",
+											"value": "PUBLIC"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписки  других пользователей на user id = 3, pag = ignore, state = ignore после измения профиля",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											"",
+											"const target = pm.response.json();",
+											"",
+											"pm.test(\"Количество подписок должно быть равно 3\", function () {",
+											"pm.expect(target.length).to.equal(3);",
+											"});",
+											"",
+											"pm.test(\"Данные ответа должны соотстветствовать данным тестового окружения\", function () {",
+											"    pm.expect('CONFIRMED').equal(target[0].state, 'state должен быть CONFIRMED first');",
+											"    pm.expect('REJECTED').equal(target[1].state, 'state должен быть REJECTED');",
+											"    pm.expect('CONFIRMED').equal(target[2].state, 'state должен быть CONFIRMED last');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:userId/subscriptions?direction=TO_ME",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":userId",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "direction",
+											"value": "TO_ME"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Удаление user id = 2 своей подписки на user id = 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribedToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribedToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "2"
+										},
+										{
+											"key": "subscribedToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Получение событий по подписке user id = 3 to user id = 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/follow/:subscribedToId/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"follow",
+										":subscribedToId",
+										"events"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "3"
+										},
+										{
+											"key": "subscribedToId",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Получение событий по подписке user id = 1 to user id = 3 (empty events)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/follow/:subscribedToId/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"follow",
+										":subscribedToId",
+										"events"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribedToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Валидация",
+					"item": [
+						{
+							"name": "Повторная подписка from user id = 1 to user id = 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(409);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка на себя самого",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(409);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подписка на несуществующего пользователя",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(404);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "100000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Удаление несществующей подписки",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 404 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/subscribe/:subscribesToId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"subscribe",
+										":subscribesToId"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "1"
+										},
+										{
+											"key": "subscribesToId",
+											"value": "100000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Изменение статуса подписки если профиль user public",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(409);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscribedToId/subscribe/:subscriberId?newState=REJECTED",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscribedToId",
+										"subscribe",
+										":subscriberId"
+									],
+									"query": [
+										{
+											"key": "newState",
+											"value": "REJECTED"
+										}
+									],
+									"variable": [
+										{
+											"key": "subscribedToId",
+											"value": "1"
+										},
+										{
+											"key": "subscriberId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Изменение статуса подписки, если статус уже был изменен",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(409);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscribedToId/subscribe/:subscriberId?newState=CONFIRMED",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscribedToId",
+										"subscribe",
+										":subscriberId"
+									],
+									"query": [
+										{
+											"key": "newState",
+											"value": "CONFIRMED"
+										}
+									],
+									"variable": [
+										{
+											"key": "subscribedToId",
+											"value": "3"
+										},
+										{
+											"key": "subscriberId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Получение событий по подписке, если подписка не подтверждена",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 409 и данные в формате json\", function () {",
+											"    pm.response.to.have.status(409);",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/users/:subscriberId/follow/:subscribedToId/events",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":subscriberId",
+										"follow",
+										":subscribedToId",
+										"events"
+									],
+									"variable": [
+										{
+											"key": "subscriberId",
+											"value": "3"
+										},
+										{
+											"key": "subscribedToId",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Дополнительный функционал (подборки)",
+					"item": [
+						{
+							"name": "Подборка users по количеству подписчиков",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_POPULAR",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_POPULAR"
+										},
+										{
+											"key": "profile",
+											"value": "PUBLIC",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству подписчиков (only public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_POPULAR&profile=PUBLIC",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_POPULAR"
+										},
+										{
+											"key": "profile",
+											"value": "PUBLIC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству подписчиков (only private)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_POPULAR&profile=PRIVATE",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_POPULAR"
+										},
+										{
+											"key": "profile",
+											"value": "PRIVATE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству подписчиков (pagination 2/1)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_POPULAR&from=2&size=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_POPULAR"
+										},
+										{
+											"key": "from",
+											"value": "2"
+										},
+										{
+											"key": "size",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству событий",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_INITIATIVE",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_INITIATIVE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству событий (only public)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_INITIATIVE&profile=PUBLIC",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_INITIATIVE"
+										},
+										{
+											"key": "profile",
+											"value": "PUBLIC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству событий (only private) Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_INITIATIVE&profile=PRIVATE",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_INITIATIVE"
+										},
+										{
+											"key": "profile",
+											"value": "PRIVATE"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Подборка users по количеству событий (pagination 2/1)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+											"    pm.response.to.be.ok;    ",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/initiators?sort=MOST_INITIATIVE&from=2&size=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"initiators"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "MOST_INITIATIVE"
+										},
+										{
+											"key": "from",
+											"value": "2"
+										},
+										{
+											"key": "size",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}

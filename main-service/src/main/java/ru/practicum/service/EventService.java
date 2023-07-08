@@ -13,12 +13,14 @@ import ru.practicum.dto.output.EventOutputDto;
 import ru.practicum.dto.output.EventShortDto;
 import ru.practicum.entity.Category;
 import ru.practicum.entity.Event;
+import ru.practicum.entity.Subscription;
 import ru.practicum.entity.User;
 import ru.practicum.exception.IllegalActionException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.state.EventState;
+import ru.practicum.state.SubscriptionState;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Clock;
@@ -350,5 +352,27 @@ public class EventService {
 
     public List<Event> getEventsByIds(List<Long> ids) {
         return eventRepository.findAllByIdIn(ids);
+    }
+
+    public List<EventShortDto> getEventsBySubscription(Long subscriberId, Long initiatorId, Integer from,
+                                                       Integer size) {
+        userService.checkSubscriberAndInitiatorAreNotSame(subscriberId, initiatorId);
+        Subscription subscription = userService.getSubscriptionIfExists(subscriberId, initiatorId);
+        if (subscription.getState().equals(SubscriptionState.CONFIRMED)) {
+            Pageable pageRequest = PageRequestSpecifier.getPageRequestWithoutSort(from, size);
+            User initiator = userService.getUserIfExists(initiatorId);
+            List<Event> initiatorsEvents = eventRepository.findAllByInitiatorAndState(initiator, EventState.PUBLISHED,
+                pageRequest).getContent();
+            List<EventShortDto> initiatorsEventsShort = EventMapper.toEventShortDtoList(initiatorsEvents);
+            addViews(initiatorsEventsShort);
+            log.info("Get request for events by subscpription: subscriber = {}, initiator = {} processed " +
+                "successfully", subscriberId, initiatorId);
+            return initiatorsEventsShort;
+        } else {
+            String message = "Unavailable action: unable to get events by subscpription. Reason: subscription status " +
+                "must be CONFIRMED, but state = " + subscription.getState();
+            log.error(message);
+            throw new IllegalActionException(message);
+        }
     }
 }

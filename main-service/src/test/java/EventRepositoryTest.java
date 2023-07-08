@@ -14,6 +14,7 @@ import ru.practicum.repository.EventRepository;
 import ru.practicum.service.PageRequestSpecifier;
 import ru.practicum.state.EventState;
 import ru.practicum.state.RequestState;
+import ru.practicum.state.UserProfileState;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,9 +45,9 @@ public class EventRepositoryTest {
     @BeforeEach
     public void createEntitiesAndEnvironment() {
         this.pageRequest = PageRequestSpecifier.getPageRequestWithoutSort(0, 10);
-        this.user1 = new User(null, "testUser1", "testUser1@mail.ru");
-        this.user2 = new User(null, "testUser2", "testUser2@mail.ru");
-        this.user3 = new User(null, "testUser3", "testUser3@mail.ru");
+        this.user1 = new User(null, "testUser1", "testUser1@mail.ru", UserProfileState.PUBLIC);
+        this.user2 = new User(null, "testUser2", "testUser2@mail.ru", UserProfileState.PUBLIC);
+        this.user3 = new User(null, "testUser3", "testUser3@mail.ru", UserProfileState.PUBLIC);
         entityManager.persist(user1);
         entityManager.persist(user2);
         entityManager.persist(user3);
@@ -56,7 +57,7 @@ public class EventRepositoryTest {
         entityManager.persist(category1);
         entityManager.persist(category2);
         entityManager.persist(category3);
-        this.event1 = new Event(null, "annotation1ForTestLengthMoreThan20tion4",category1,
+        this.event1 = new Event(null, "annotation1ForTestLengthMoreThan20tion4", category1,
             LocalDateTime.now(), "description1ForTestLengthMoreThan20",
             LocalDateTime.of(2024, 1, 1, 1, 1, 1), user1, new Location(),
             true, 0, LocalDateTime.of(2023, 1, 1, 1, 1, 1),

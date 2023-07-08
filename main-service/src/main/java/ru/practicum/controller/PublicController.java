@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.dto.output.EventInitiatorDto;
 import ru.practicum.dto.reversible.CategoryDto;
 import ru.practicum.dto.output.CompilationDto;
 import ru.practicum.dto.output.EventFullDto;
@@ -11,9 +12,12 @@ import ru.practicum.dto.output.EventShortDto;
 import ru.practicum.service.CategoryService;
 import ru.practicum.service.CompilationService;
 import ru.practicum.service.EventService;
+import ru.practicum.service.UserService;
+import ru.practicum.state.UserProfileState;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -24,11 +28,14 @@ public class PublicController {
     private final CategoryService categoryService;
     private final EventService eventService;
     private final CompilationService compilationService;
+    private final UserService userService;
 
-    public PublicController(CategoryService categoryService, EventService eventService, CompilationService compilationService) {
+    public PublicController(CategoryService categoryService, EventService eventService, CompilationService
+        compilationService, UserService userService) {
         this.categoryService = categoryService;
         this.eventService = eventService;
         this.compilationService = compilationService;
+        this.userService = userService;
     }
 
     @GetMapping("/categories")
@@ -85,5 +92,16 @@ public class PublicController {
     public CompilationDto getCompilation(@PathVariable @Positive Long compId) {
         log.info("GET: /compilations/{}", compId);
         return compilationService.getCompilation(compId);
+    }
+
+    @GetMapping("/initiators")
+    @ResponseStatus(HttpStatus.OK) //получить подборку пользователей, на которых можно подписаться
+    public List<EventInitiatorDto> getInitiators(@RequestParam @NotBlank(message = "must be 'MOST_POPULAR' or " +
+        "'MOST_INITIATIVE'") String sort,
+                                                 @RequestParam (required = false) UserProfileState profile,
+                                                 @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                 @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+        log.info("GET: /initiators, sort = {}, profile = {}, from = {}, size = {}", sort, profile, from, size);
+        return userService.getInitiators(sort, profile, from, size);
     }
 }

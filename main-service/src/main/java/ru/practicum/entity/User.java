@@ -1,13 +1,16 @@
 package ru.practicum.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Where;
+import ru.practicum.state.UserProfileState;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -20,4 +23,22 @@ public class User {
     private String name;
     @Column(nullable = false, length = 254, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserProfileState profile;
+
+    @OneToMany(mappedBy = "initiator")
+    @Where(clause = "state = 'PUBLISHED'")
+    private List<Event> events = new ArrayList<>();
+
+    @OneToMany(mappedBy = "subscribedTo")
+    @Where(clause = "subscribe_state = 'CONFIRMED'")
+    private List<Subscription> subscribers = new ArrayList<>();
+
+    public User(Long id, String name, String email, UserProfileState profile) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.profile = profile;
+    }
 }
